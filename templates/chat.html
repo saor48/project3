@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My English Chat Page</title>
+    </head>
+<body>
+    <h1>Hello {{username}} </h1>
+    <h5><i>to send a message:</i> /yourname/message</h5>
+    <h3>Online now ({{chatters}}): 
+        {%for user in users%}
+        {{user}}, <!--<br>-->
+        {%endfor%}
+    </h3>
+    
+    {%for chatline in chat_messages%}
+    {{chatline}}<br>
+    {%endfor%}
+    
+    <script>
+      //  setTimeout(function() {window.location.reload();}, 5000);
+    </script>
+</body>
+</html>
