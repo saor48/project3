@@ -7,6 +7,9 @@ phrases = []
 users = []      
 chatters = 0    #current number of users online
 lines = 0       #enumerate each chat line
+sourcelist = "data/wordlist.txt"
+     # from https://github.com/first20hours/google-10000-english
+sourcelist2 = "data/google-10000-english.txt"  
 
 def add_phrase(username, message, lines):
     phrases.append("{2}> {0}: {1}".format(username, message, lines))
@@ -17,19 +20,18 @@ def split_message(message):
 
 def parse_phrases(phrase, words):
     corrected = ""
-    with open("data/wordlist.txt", "r") as word_list:
+    """
+    with open(sourcelist, "r") as word_list:
         reader = csv.reader(word_list, delimiter=',')
-        for row in reader:
-            wordlist = row
-        print("yes", wordlist)
+        """
+    with open(sourcelist2, "r") as word_list:  
+        filelist = word_list.read().splitlines()   
         for word in words:
-            if word in wordlist:
+            if word in filelist:
                 corrected += " " + word
-                print("in-",word)
             else:
                 word = '[' + word + ']'
                 corrected += " " + word
-                print("out-",word)
     print("corrected-", corrected)
     return corrected
     
@@ -47,22 +49,19 @@ def index():
         return redirect(request.form["username"]) 
     return render_template("index.html")
  
-@app.route('/<username>') 
+@app.route('/<username>',  methods=["GET","POST"]) 
 def username(username):
     username = username.title()
     with open("data/users.txt", "r") as user_list:  
         users = user_list.readlines()
+    if request.method == "POST":
+        message = request.form["message"]
+        global lines
+        lines += 1
+        words = split_message(message)
+        message = parse_phrases(message, words)
+        add_phrase(username, message, lines)
     return render_template("chat.html", 
                 username=username, chat_messages=phrases, users=users, chatters=chatters )
-    
-@app.route('/<username>/<message>') 
-def message(username, message):
-    global lines
-    lines += 1
-    words = split_message(message)
-    message = parse_phrases(message, words)
-    add_phrase(username, message, lines)
-    print("global words-", words)
-    return redirect(username)
-    
+  
 app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=True)
