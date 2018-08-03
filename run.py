@@ -1,3 +1,16 @@
+"""to fix
+Heroku - not resetttinf users,txt
+Timeout- NOT WORKING PROPERLY
+"""
+"""to add
+list of verbs, nouns
+1. search phrase for verb
+2, look for noun before and after if statement
+"""
+"""option
+multi-thread searching
+
+"""
 import os
 from flask import Flask, redirect, render_template, request
 import csv
@@ -27,7 +40,7 @@ def parse_phrases(phrase, words):
     with open(sourcelist2, "r") as word_list:  
         filelist = word_list.read().splitlines()   
         for word in words:
-            if word in filelist:
+            if word.lower() in filelist:
                 corrected += " " + word
             else:
                 word = '[' + word + ']'
