@@ -1,4 +1,2 @@
-fig
 bib
 fig
-bib
