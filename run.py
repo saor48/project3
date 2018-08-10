@@ -82,9 +82,6 @@ def index():
             #erase old messages from file
             with open("data/chatlines.txt", "w") as list:
                  list.close()
-            #erase old messages from static dir file
-            with open("static/js/data/chatlines.txt", "w") as staticlist:
-                 staticlist.close()
         with open("data/users.txt", "a") as user_list:
             user_list.writelines(request.form["username"] + "\n")
         return redirect(request.form["username"]) 
