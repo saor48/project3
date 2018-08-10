@@ -14,22 +14,38 @@ multi-thread searching
 """
 import os
 from flask import Flask, redirect, render_template, request, url_for
-import csv
+import csv, json
 
 app = Flask(__name__)
+TEMPLATES_AUTO_RELOAD = False
+
 phrases = []    
-users = []      
+users = []  
+jsondict = {}
 chatters = 0    #current number of users online
-lines = 0       #enumerate each chat line
+line = 0       #enumerate each chat line
 previous = {}   #store previous message for each user
 sourcelist = "data/wordlist.txt"
      # adapted from https://github.com/first20hours/google-10000-english
 sourcelist2 = "data/google-10k-english.txt"  
 
-def add_phrase(username, message, lines):
-    phrases.append("{2}> {0}: {1}".format(username, message, lines))
+def add_phrase(username, message, line):
+    global jsondict
+    chatline = "{2}> {0}: {1}".format(username, message, line)
+    phrases.append(chatline)
+    jsondict[str(line)] = str(chatline)
+    json_phrases(jsondict, chatline)
 
-def previousMessage(username):
+def json_phrases(jsondict, chatline):
+    with open("data/chatlines.txt", "a") as chat:
+            chat.writelines(str(chatline) + "\n")
+    with open("data/chatlines.json", "w") as chatlines:
+            json.dump(jsondict, chatlines)
+    with open("data/chatlines.json", "r") as jlines:
+            jsonlines = json.load(jlines)
+    print "json-", jsonlines
+    
+def previous_message(username):
     key = str(username)
     if key in previous.keys():
         message = previous[key]
@@ -63,29 +79,38 @@ def index():
             #erase old users from file
             with open("data/users.txt", "w") as user_list:
                  user_list.close()
+            #erase old messages from file
+            with open("data/chatlines.txt", "w") as list:
+                 list.close()
+            #erase old messages from static dir file
+            with open("static/js/data/chatlines.txt", "w") as staticlist:
+                 staticlist.close()
         with open("data/users.txt", "a") as user_list:
             user_list.writelines(request.form["username"] + "\n")
         return redirect(request.form["username"]) 
-    return render_template("index.html")
+    return render_template("index.html", chat_messages=phrases)
  
 @app.route('/<username>',  methods=["GET","POST"]) 
 def username(username):
-    global lines, previous
+    global line, previous
     name = username.title()
     with open("data/users.txt", "r") as user_list:  
         users = user_list.readlines()
     if request.method == "POST":
         message = request.form["message"]
         if str(message) != "":
-            if str(message) != previousMessage(username):     #dont reload POST data
+            if str(message) != previous_message(username):     #dont reload POST data
                 previous[str(username)] = str(message)
-                lines += 1
+                line += 1
                 words = message.split(' ')
                 message = parse_phrases(words)
-                add_phrase(username, message, lines)
+                add_phrase(username, message, line)
             
     return render_template("chat.html", 
                 username=name, chat_messages=phrases, users=users, chatters=chatters )
-  
+
+@app.route('/chat/messages', methods=["GET","POST"])  
+def messages(): 
+  return render_template("messages.html", chat_messages=phrases)
   
 app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=True)

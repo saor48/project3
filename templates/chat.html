@@ -28,10 +28,12 @@
                 {{user}},
                 {%endfor%}
             </h3>
-    
-            {%for chatline in chat_messages%}
-            {{chatline}}<br>
-            {%endfor%}
+            <div id="reloader">
+                {%for chatline in chat_messages%}
+                {{chatline}}<br>
+                {%endfor%}
+            </div>
+            <div id = "timer">Timer</div>
         </div>
         <div id="analyse" class="column" style="background-color:yellow;">
             <h2>Here you can analyse the structure of your phrases</h2>
@@ -47,8 +49,44 @@
             </form>
         </div>
     </div>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    
+    
     <script>
-     //   setTimeout(function() { window.location.reload();}, 5000);
+        console.log("reloader1");
+        var newMessageCheck = setInterval(function() { 
+            var timer = Date.now();
+            $( "#timer" ).html("timenow=" + timer/1000 );
+            console.log(timer/1000);
+            
+            jQuery.get( "/chat/messages").then(function(text, status, xhr){
+            console.log(text);
+            jQuery("#reloader").html(text);
+            });
+        }, 5000);
     </script>
+    
+    <!--
+     $( "#reloader" ).load( "static/js/data/chatlines.txt" ); 
+            $( "#timer" ).html("timenow=" + timer/1000 );
+    $( "#reloader" ).load( "static/messages.html #reloader" );
+     jQuery.getJSON( "data/chatlines.json", function( data ) {
+            console.log("in==");
+            console.log("reloader-", data); //json output
+             });
+    jQuery.get( "/index.html #reloader").then(function(text, status, xhr){
+            console.log(text);
+            jQuery("#reloader").html(text);
+            });
+    <script type="text/javascript" src="js/reloader.js"></script>
+    <script type="text/javascript" src="static/js/reload2.js"></script>
+    <script>
+        setTimeout(function() { 
+            jQuery("#reloader").html("with open("js/data/chatlines.txt", "a") as chat:
+            chat.writelines(str(chatline))");
+        }, 5000);
+        
+    </script> -->
 </body>
 </html>
