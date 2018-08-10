@@ -43,7 +43,7 @@ def json_phrases(jsondict, chatline):
             json.dump(jsondict, chatlines)
     with open("data/chatlines.json", "r") as jlines:
             jsonlines = json.load(jlines)
-    print "json-", jsonlines
+    print ("json-", jsonlines)
     
 def previous_message(username):
     key = str(username)
