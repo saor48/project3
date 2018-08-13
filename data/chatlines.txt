@@ -1,3 +1,3 @@
-1> bib:  hi [jik]
-2> bib:  yo
-3> op:  me too
+1> bib:  i can do it
+2> fig:  i go here
+3> fig:  hi [jik]

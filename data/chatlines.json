@@ -1,1 +1,1 @@
-{"1": "1> bib:  hi [jik]", "3": "3> op:  me too", "2": "2> bib:  yo"}
+{"1": "{'line': '1', 'message': ' i can do it', 'user': 'bib'}", "3": "{'line': '3', 'message': ' hi [jik]', 'user': 'fig'}", "2": "{'line': '2', 'message': ' i go here', 'user': 'fig'}"}

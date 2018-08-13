@@ -1,23 +1,22 @@
 """to fix
-Heroku - not resetttinf users,txt
-Timeout- affecting chat input box =>
-partial reload by div=jquery?
+Heroku - not reseting users.txt
 """
 """to add
 list of verbs, nouns
-1. search phrase for verb
-2, look for noun before and after for statements
+1. search phrase for verbs
 """
 """option
-multi-thread searching
-
+multi-thread searching 
+asyncio from python3.4 current python2.7
 """
 import os
 from flask import Flask, redirect, render_template, request, url_for
 import csv, json
+import structure
 
 app = Flask(__name__)
 TEMPLATES_AUTO_RELOAD = False
+PYTHONASYNCIODEBUG = 1
 
 phrases = []    
 users = []  
@@ -27,23 +26,27 @@ line = 0       #enumerate each chat line
 previous = {}   #store previous message for each user
 sourcelist = "data/wordlist.txt"
      # adapted from https://github.com/first20hours/google-10000-english
-sourcelist2 = "data/google-10k-english.txt"  
+sourcelist2 = "data/8K-english.txt"  
 
 def add_phrase(username, message, line):
     global jsondict
+    jphrase = {}
     chatline = "{2}> {0}: {1}".format(username, message, line)
     phrases.append(chatline)
-    jsondict[str(line)] = str(chatline)
+    jphrase['line'] = str(line)
+    jphrase['user'] = str(username)
+    jphrase['message'] = str(message)
+    jsondict[str(line)] = str(jphrase)
     json_phrases(jsondict, chatline)
 
 def json_phrases(jsondict, chatline):
     with open("data/chatlines.txt", "a") as chat:
             chat.writelines(str(chatline) + "\n")
-    with open("data/chatlines.json", "w") as chatlines:
-            json.dump(jsondict, chatlines)
-    with open("data/chatlines.json", "r") as jlines:
-            jsonlines = json.load(jlines)
-    print ("json-", jsonlines)
+    with open("data/chatlines.json", "w") as jfile:
+            json.dump(jsondict, jfile)
+    #start async userpage updates from here===============
+   
+    #================================================
     
 def previous_message(username):
     key = str(username)
@@ -102,7 +105,10 @@ def username(username):
                 words = message.split(' ')
                 message = parse_phrases(words)
                 add_phrase(username, message, line)
-            
+    # ------ this is temp position---------
+    if line > 0:
+        structure.parse(structure.getline('1')) 
+    #---------------------------    
     return render_template("chat.html", 
                 username=name, chat_messages=phrases, users=users, chatters=chatters )
 
