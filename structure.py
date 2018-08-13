@@ -10,8 +10,10 @@ def getline(line):
      jchat = {}
      with open("data/chatlines.json", "r") as jlines:
             jphrase = json.load(jlines)
+     """ heroku error no iteritems      
      for k, v in jphrase.iteritems():
           print ("kv-", k, v)
+     """     
      print("gline-", line)
      phrase = eval(jphrase[line])["message"]
      print("phrase17-",phrase)

@@ -1,3 +1,1 @@
-1> bib:  i can do it
-2> fig:  i go here
-3> fig:  hi [jik]
+1> bib:  hi [jik]
