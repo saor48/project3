@@ -24,13 +24,16 @@ jsondict = {}
 chatters = 0    #current number of users online
 line = 0       #enumerate each chat line
 previous = {}   #store previous message for each user
+score = {}      #hold current score for each user
 sourcelist = "data/wordlist.txt"
      # adapted from https://github.com/first20hours/google-10000-english
 sourcelist2 = "data/8K-english.txt"  
 
-def add_phrase(username, message, line):
+def add_phrase(username, corrected, line):
     global jsondict
     jphrase = {}
+    message = corrected[0]
+    score = corrected[1]
     chatline = "{2}> {0}: {1}".format(username, message, line)
     phrases.append(chatline)
     jphrase['line'] = str(line)
@@ -57,6 +60,8 @@ def previous_message(username):
     return message
     
 def parse_phrases(words):
+    good=0
+    bad=0
     corrected = ""
     """
     with open(sourcelist, "r") as word_list:
@@ -67,11 +72,14 @@ def parse_phrases(words):
         for word in words:
             if word.lower() in filelist:
                 corrected += " " + word
+                good += 1
             else:
                 word = '[' + word + ']'
                 corrected += " " + word
+                bad += 1
     print("corrected-", corrected)
-    return corrected
+    score = good - bad
+    return (corrected, score)
     
 @app.route('/', methods=["GET","POST"])
 def index():
@@ -92,7 +100,7 @@ def index():
  
 @app.route('/<username>',  methods=["GET","POST"]) 
 def username(username):
-    global line, previous
+    global line, previous, score
     name = username.title()
     with open("data/users.txt", "r") as user_list:  
         users = user_list.readlines()
@@ -103,14 +111,23 @@ def username(username):
                 previous[str(username)] = str(message)
                 line += 1
                 words = message.split(' ')
-                message = parse_phrases(words)
-                add_phrase(username, message, line)
+                corrected = parse_phrases(words)
+                add_phrase(username, corrected, line)
+                if str(username) in score:
+                    score[str(username)] += corrected[1]
+                else:
+                    score[str(username)] = corrected[1]
     # ------ this is temp position---------
     if line > 0:
         structure.parse(structure.getline('1')) 
-    #---------------------------    
+    #---------------------------   
+    print("score-", score)
+    user_score=0
+    if str(username) in score:
+        user_score = score[str(username)]
     return render_template("chat.html", 
-                username=name, chat_messages=phrases, users=users, chatters=chatters )
+                username=name, chat_messages=phrases, users=users, 
+                chatters=chatters, score=user_score)
 
 @app.route('/chat/messages', methods=["GET","POST"])  
 def messages(): 

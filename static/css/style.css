@@ -1,0 +1,16 @@
+* {
+    box-sizing: border-box;
+    }
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    }
+#score{
+    background-color: white;
+    float: right;
+    width: 20%;
+    padding-right: 20px;
+    }
+            
+       

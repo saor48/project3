@@ -1,22 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="static/css/style.css" type="text/css" />
         <title>My English Chat Page</title>
-        <style type="text/css">
-            * {
-                box-sizing: border-box;
-                }
-            .column {
-                float: left;
-                width: 50%;
-                padding: 10px;
-                }
-        </style>
     </head>
 <body>
     <div class="container" style="background-color:powderblue; height:500px">
         <div id="chat" class="column" style="background-color:powderblue;">
             <h1>Hello {{username}} </h1>
+            <div id="score"> Score:{{score}}</div>
             <form method="POST">
                 <label for="line">Your message</label>
                 <input type="text" name="message" id="message"/>
