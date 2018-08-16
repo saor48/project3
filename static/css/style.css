@@ -1,16 +1,33 @@
 * {
     box-sizing: border-box;
     }
+.container {
+    background-color:powderblue; 
+    height:500px
+}
 .column {
     float: left;
     width: 50%;
     padding: 10px;
     }
+#analyse {
+     background-color:yellow;
+}
+#reloader {
+    position: relative;
+}
 #score{
     background-color: white;
     float: right;
     width: 20%;
     padding-right: 20px;
+    }
+#scoreb{
+    position: absolute;
+    background-color: white;
+    right: 20px;
+    top: 20px;
+    width: 25%;
     }
             
        

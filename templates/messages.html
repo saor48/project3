@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        
     </head>
 <body>
-    
     <div >
         {%for chatline in chat_messages%}
         {{chatline}}<br>
         {%endfor%}
     </div>
-    
+    <div id="scoreb"> Leaderboard<br>
+        {%for k in leaderboard%}
+        {{k}}: {{score[k]}}<br>
+        {%endfor%}
+    </div>
 </body>
 </html>
  
