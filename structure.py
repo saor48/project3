@@ -1,9 +1,14 @@
 # purpose: to analyse  Englishphrase as Subject + Verb + Object
 import json
-tobe = ['be', 'being', 'been', 'am', 'are', 'was', 'were']
+tobe = ['be', 'being', 'been', 'am', 'are', 'is', 'was', 'were']
 tohave = ['have', 'having','had', 'has']
-auxs = ['will', 'can', 'might', 'may', 'would', 'should', 'could']
+modals = ['will', 'can', 'might', 'may', 'would', 'should', 'could']
+auxs = ['am', 'are', 'is', 'was', 'were', 'have','had', 'has']
+"""
+          
+"""
 verblist = "data/verbs.txt"
+#position = []
 
 def getline(line):
      jphrase = {}
@@ -16,11 +21,15 @@ def getline(line):
      """     
      print("gline-", line)
      phrase = eval(jphrase[line])["message"]
-     print("phrase17-",phrase)
+     print("phrase24-",phrase)
      return phrase
+
+def split(phrase):
+     words = phrase.split(' ')
+     return words
      
 def parse(phrase):
-     words = phrase.split(' ')
+     words = split(phrase)
      position = 0
      verb_position = []
      with open(verblist, "r") as verb_list:  
@@ -30,5 +39,34 @@ def parse(phrase):
                if word.lower() in verbs:
                     verb_position.append(position)
                position += 1
-     print("vpos-", verb_position)       
+     print("vpos-", verb_position)
+     return verb_position
+     
+def svo(position, phrase):
+     if position:
+          vb = ""
+          words = split(phrase)
+          for pos in position:
+               print("svopos-",pos)
+               print(words)
+               vb += words[int(pos)] + " "
+          print(" verb=", vb)
+          sj = ""
+          spos = int(position[0])
+          for i in range(spos) :
+               sj += words[i] + " "
+          print(" subj=", sj)
+          ob = ""
+          obpos = int(position[-1]) + 1
+          for i in range(obpos, len(words), 1) :
+               ob += words[i] + " "
+               print(" obj=", ob)
+     else:
+          return()
+     return(sj, vb, ob)
+
+def main(line):
+     phrase = getline(line)
+     vpos = parse(phrase)
+     svo(vpos, phrase)
             

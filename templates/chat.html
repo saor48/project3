@@ -36,6 +36,7 @@
         <div id="analyse" class="column">
             <h2>Here you can analyse the structure of your phrases</h2>
             <h4>Enter the line number you want to analyse and the type of phrase as statement or question</h4>
+            <h3>Cooperate or challenge</h3>
             <form method="POST" name="structure" id="structure">
                 <label for="line">Line Number</label>
                 <input type="text" name="line" id="line"/>
@@ -52,6 +53,9 @@
             crossorigin="anonymous"></script>
     <script>
         console.log("reloader1");
+        jQuery.get( "/chat/structure").then(function(text, status, xhr){
+                jQuery("#analyse").html(text);
+            });
         var newMessageCheck = setInterval(function() { 
             var timer = Date.now();
             $( "#timer" ).html("timenow=" + timer/1000 );

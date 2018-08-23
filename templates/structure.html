@@ -1,0 +1,31 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Analyse</title>
+</head>
+<body>
+    <div id="analyse" class="column">
+            <h2>Here you can analyse the structure of phrases</h2>
+            <h4>Enter the line number you want to analyse </br>
+                then select the type of the phrase</h4>
+            
+            <form method="POST" action="" name="structure" id="structure">
+                <input type="radio" name="cc" value="coop"> Cooperate<br>
+                <input type="radio" name="cc" value="chal"> Challenge<br>
+                <label for="line">Line Number</label>
+                <input type="text" name="line" id="line"/>
+                <br>
+                This line number is:<br>
+                <input type="radio" name="sq" value="stat"> A statement, not a question<br>
+                <input type="radio" name="sq" value="ques"> A question, not a statement<br>
+                <input type="radio" name="sq" value="none"> Neither a statement nor a question<br>
+                <br>
+                <input type="hidden" name="message" value="">
+                <input type="submit" value="Submit"/>
+            </form>
+        </div>
+</body>
+</html>

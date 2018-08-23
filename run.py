@@ -4,23 +4,26 @@ Heroku - not reseting users.txt -----
 """
 """to add
 0.list of verbs, nouns
-1. search phrase for verbs
-2. set chatroom limit =8
-3. user still online check
+1. search phrase for verbs -done basic
+2. second form input
+3. user still online check = 5sec request recvd
 """
 """option
 multi-thread searching 
 asyncio - use for checking 3 above
 """
 import os, asyncio
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, flash
 import csv, json
 import structure
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 TEMPLATES_AUTO_RELOAD = False
 PYTHONASYNCIODEBUG = 1
 
+maxUSERS = 3
+error_message = ""
 phrases = []    
 users = []  
 jsondict = {}
@@ -35,10 +38,14 @@ sourcelist = "data/wordlist.txt"
      # adapted from https://github.com/first20hours/google-10000-english
 sourcelist2 = "data/8K-english.txt"  
 
+# ---------------6-Functions-----------------------------------------#
+#  
 def add_phrase(username, corrected, line):
     global jsondict
     jphrase = {}
     message = corrected[0]
+    if corrected[2]:
+        print("its a question!!!!!!!")
     chatline = "{2}> {0}: {1}".format(username, message, line)
     phrases.append(chatline)
     jphrase['line'] = str(line)
@@ -91,6 +98,7 @@ def parse_phrases(words):
     good=0
     bad=0
     corrected = ""
+    question = False
     """
     with open(sourcelist, "r") as word_list:
         reader = csv.reader(word_list, delimiter=',')
@@ -98,6 +106,10 @@ def parse_phrases(words):
     with open(sourcelist2, "r") as word_list:  
         filelist = word_list.read().splitlines()   
         for word in words:
+            if word == words[-1]:
+                if word[-1] == '?':
+                    word = word[:-1]
+                    question = True
             if word.lower() in filelist:
                 corrected += " " + word
                 good += 1
@@ -105,13 +117,18 @@ def parse_phrases(words):
                 word = '[' + word + ']'
                 corrected += " " + word
                 bad += 1
+    if question:
+        corrected += '?'
     print("corrected-", corrected)
     score = good - bad
-    return (corrected, score)
+    return (corrected, score, question)
     
+# ---------------4-VIEWS-----------------------------------------#
+#   '/'-'/<username>'-'/chat/messages'-'/chat/structure'
+
 @app.route('/', methods=["GET","POST"])
 def index():
-    global chatters
+    global chatters, error_message
     if request.method == "POST":
         chatters += 1
         if chatters == 1:
@@ -121,19 +138,32 @@ def index():
             #erase old messages from file
             with open("data/chatlines.txt", "w") as list:
                  list.close()
-        with open("data/users.txt", "a") as user_list:
-            user_list.writelines(request.form["username"] + "\n")
-        return redirect(request.form["username"]) 
-    return render_template("index.html", chat_messages=phrases)
+        if chatters <= maxUSERS:         
+            with open("data/users.txt", "a") as user_list:
+                user_list.writelines(request.form["username"] + "\n")
+            return redirect(request.form["username"]) 
+        else:
+            error_message = "Max Users exceeded - No Access"
+            flash("Max Users exceeded - Access Denied")
+    return render_template("index.html", error=error_message)
  
 @app.route('/<username>',  methods=["GET","POST"]) 
 def username(username):
     global line, previous, score, user_score
+    question = False
     name = username.title()
     with open("data/users.txt", "r") as user_list:  
         users = user_list.readlines()
     if request.method == "POST":
-        message = request.form["message"]
+        if not request.form["message"]:
+            cc = request.form["cc"]
+            line = int(request.form["line"])
+            sq = request.form["sq"]
+            message = ""
+            print("cc--", cc,line,sq)
+            structure.main(str(line))
+        else:
+            message = request.form["message"]
         if str(message) != "":
             if str(message) != previous_message(username):     #dont reload POST data
                 previous[str(username)] = str(message)
@@ -144,8 +174,8 @@ def username(username):
                 #make def score instead
                 user_score = calc_score(corrected, username)
     # ------ this is temp position---------
-    if line > 0:
-        structure.parse(structure.getline('1')) 
+   # if line > 0:
+      #  structure.main(str(line))
     #---------------------------   
     return render_template("chat.html", 
                 username=name, chat_messages=phrases, users=users, 
@@ -155,7 +185,12 @@ def username(username):
 @app.route('/chat/messages', methods=["GET","POST"])  
 def messages(): 
     #also here start a user timeout check -asyncio?
-  return render_template("messages.html", chat_messages=phrases,
+    return render_template("messages.html", chat_messages=phrases,
                 score=score, leaderboard=leaderboard)
+
+@app.route('/chat/structure', methods=["GET","POST"])  
+def struct(): 
+    # "w3-include-html"
+    return render_template("structure.html")
   
 app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=True)
