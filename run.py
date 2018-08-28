@@ -5,41 +5,51 @@ Heroku - not reseting users.txt -----
 """to add
 0.list of verbs, nouns
 1. search phrase for verbs -done basic
-2. second form input
+2. second form input  -output to chat, how?
 3. user still online check = 5sec request recvd
 """
 """option
 multi-thread searching 
 asyncio - use for checking 3 above
 """
-import os, asyncio
+import os, asyncio, time
 from flask import Flask, redirect, render_template, request, url_for, flash
 import csv, json
 import structure
+#use a new thread for json file write
+from threading import Thread
+import athread
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 TEMPLATES_AUTO_RELOAD = False
 PYTHONASYNCIODEBUG = 1
 
+#newTHREAD = False
 maxUSERS = 3
 error_message = ""
-phrases = []    
-users = []  
-jsondict = {}
+phrases = []    # chat messages
+#users = []      # current users
+jsondict = {}   # chat message as json
 chatters = 0    #current number of users online
 line = 0       #enumerate each chat line
 previous = {}   #store previous message for each user
 score = {}      #hold current score for all users
 leaderboard = [] #sorted list by top scorer
-user_score = 0  #this username
-print("userscore-", user_score)
+user_score = 0  # for this username
 sourcelist = "data/wordlist.txt"
      # adapted from https://github.com/first20hours/google-10000-english
 sourcelist2 = "data/8K-english.txt"  
 
 # ---------------6-Functions-----------------------------------------#
-#  
+#  add_phrase(username, corrected, line) -- append to list(phrases) + create json string
+# new_thread(jsondict, chatline): --------- start new thread for below:
+    # athread.json_phrases(jsondict, chatline)---append new message to json file
+# previous_message(username) -------------- check if user submit button x2
+# calc_score(corrected, username)---------- score each word then total
+# calc_leaderboard(username, my_score) ---- reorder leaderboard
+# parse_phrases(words)--------------------- check each word in message
+
 def add_phrase(username, corrected, line):
     global jsondict
     jphrase = {}
@@ -52,17 +62,17 @@ def add_phrase(username, corrected, line):
     jphrase['user'] = str(username)
     jphrase['message'] = str(message)
     jsondict[str(line)] = str(jphrase)
-    json_phrases(jsondict, chatline)
+    new_thread(jsondict, chatline)
 
-def json_phrases(jsondict, chatline):
-    with open("data/chatlines.txt", "a") as chat:
-            chat.writelines(str(chatline) + "\n")
-    with open("data/chatlines.json", "w") as jfile:
-            json.dump(jsondict, jfile)
-    #start async userpage updates from here===============
-   
-    #================================================
-    
+def new_thread(jsondict, chatline):
+    timer = time.time()
+    print('start new thread', timer)
+    new_loop = asyncio.new_event_loop()
+    t = Thread(target=athread.start_loop, args=(new_loop,))
+    t.start()
+    new_loop.call_soon_threadsafe(athread.json_phrases, jsondict, chatline)
+    print('after loop call, delay=', time.time() - timer)
+
 def previous_message(username):
     key = str(username)
     if key in previous.keys():
@@ -124,7 +134,10 @@ def parse_phrases(words):
     return (corrected, score, question)
     
 # ---------------4-VIEWS-----------------------------------------#
-#   '/'-'/<username>'-'/chat/messages'-'/chat/structure'
+# '/'                       enter username then redirects to /username
+# '/<username>'             main user chat page
+# '/chat/messages'          updates each user with new messages
+# '/chat/structure'         form to allow user to analyse any message line
 
 @app.route('/', methods=["GET","POST"])
 def index():
@@ -138,7 +151,8 @@ def index():
             #erase old messages from file
             with open("data/chatlines.txt", "w") as list:
                  list.close()
-        if chatters <= maxUSERS:         
+        if chatters <= maxUSERS: 
+            timer = str(time.time())
             with open("data/users.txt", "a") as user_list:
                 user_list.writelines(request.form["username"] + "\n")
             return redirect(request.form["username"]) 
@@ -146,15 +160,19 @@ def index():
             error_message = "Max Users exceeded - No Access"
             flash("Max Users exceeded - Access Denied")
     return render_template("index.html", error=error_message)
- 
+
+# user chat page, handles all form inputs
 @app.route('/<username>',  methods=["GET","POST"]) 
 def username(username):
     global line, previous, score, user_score
     question = False
     name = username.title()
-    with open("data/users.txt", "r") as user_list:  
+    with open("data/users.txt", "r") as user_list:
         users = user_list.readlines()
+        print("users-", users)
+        
     if request.method == "POST":
+        # request for structure
         if not request.form["message"]:
             cc = request.form["cc"]
             line = int(request.form["line"])
@@ -164,6 +182,7 @@ def username(username):
             structure.main(str(line))
         else:
             message = request.form["message"]
+        # new messsage
         if str(message) != "":
             if str(message) != previous_message(username):     #dont reload POST data
                 previous[str(username)] = str(message)
@@ -171,23 +190,27 @@ def username(username):
                 words = message.split(' ')
                 corrected = parse_phrases(words)
                 add_phrase(username, corrected, line)
-                #make def score instead
                 user_score = calc_score(corrected, username)
-    # ------ this is temp position---------
-   # if line > 0:
-      #  structure.main(str(line))
-    #---------------------------   
+  
     return render_template("chat.html", 
                 username=name, chat_messages=phrases, users=users, 
                 chatters=chatters, my_score=user_score, 
                 score=score, leaderboard=leaderboard)
 
+# update chat messages very 5 secs
 @app.route('/chat/messages', methods=["GET","POST"])  
 def messages(): 
-    #also here start a user timeout check -asyncio?
+    #here start a user timeout check -asyncio?
+    if request.method == "GET":
+            user = request.args["user"]
+            print("get-user is :", user)
+            # now store user and timestamp in list for later checking
+            # in new thread from json-phrases function
+    #--end asyncio section-----------------------------        
     return render_template("messages.html", chat_messages=phrases,
                 score=score, leaderboard=leaderboard)
 
+# provide html to analyse phrase
 @app.route('/chat/structure', methods=["GET","POST"])  
 def struct(): 
     # "w3-include-html"

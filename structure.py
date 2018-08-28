@@ -1,4 +1,4 @@
-# purpose: to analyse  Englishphrase as Subject + Verb + Object
+# purpose: to analyse an English phrase as Subject + Verb + Object
 import json
 tobe = ['be', 'being', 'been', 'am', 'are', 'is', 'was', 'were']
 tohave = ['have', 'having','had', 'has']
