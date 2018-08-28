@@ -1,16 +1,14 @@
 """to fix
 Heroku - not reseting users.txt -----
------>use sessions or----->reuse setInterval to check if user online
+chatters subtract   done but test
 """
 """to add
 0.list of verbs, nouns
 1. search phrase for verbs -done basic
 2. second form input  -output to chat, how?
-3. user still online check = 5sec request recvd
 """
 """option
-multi-thread searching 
-asyncio - use for checking 3 above
+asyncio - py3.5 modules not available in c9-py3.4
 """
 import os, asyncio, time
 from flask import Flask, redirect, render_template, request, url_for, flash
@@ -29,7 +27,7 @@ PYTHONASYNCIODEBUG = 1
 maxUSERS = 3
 error_message = ""
 phrases = []    # chat messages
-#users = []      # current users
+userlog = {}      # current users online 
 jsondict = {}   # chat message as json
 chatters = 0    #current number of users online
 line = 0       #enumerate each chat line
@@ -72,7 +70,9 @@ def new_thread(jsondict, chatline):
     t.start()
     new_loop.call_soon_threadsafe(athread.json_phrases, jsondict, chatline)
     print('after loop call, delay=', time.time() - timer)
-
+    new_loop.call_soon_threadsafe(athread.whois_online, userlog)
+    print('2nd loop call, delay=', time.time() - timer)
+    
 def previous_message(username):
     key = str(username)
     if key in previous.keys():
@@ -139,6 +139,7 @@ def parse_phrases(words):
 # '/chat/messages'          updates each user with new messages
 # '/chat/structure'         form to allow user to analyse any message line
 
+# user sign in page
 @app.route('/', methods=["GET","POST"])
 def index():
     global chatters, error_message
@@ -159,6 +160,7 @@ def index():
         else:
             error_message = "Max Users exceeded - No Access"
             flash("Max Users exceeded - Access Denied")
+            chatters -= 1
     return render_template("index.html", error=error_message)
 
 # user chat page, handles all form inputs
@@ -200,13 +202,12 @@ def username(username):
 # update chat messages very 5 secs
 @app.route('/chat/messages', methods=["GET","POST"])  
 def messages(): 
-    #here start a user timeout check -asyncio?
+    global userlog
     if request.method == "GET":
-            user = request.args["user"]
-            print("get-user is :", user)
-            # now store user and timestamp in list for later checking
-            # in new thread from json-phrases function
-    #--end asyncio section-----------------------------        
+        user = request.args["user"]
+        timer = time.time()
+        userlog[user] = timer    #timestamp user for later check if still online
+                  
     return render_template("messages.html", chat_messages=phrases,
                 score=score, leaderboard=leaderboard)
 

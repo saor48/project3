@@ -1,2 +1,7 @@
-1> fig:  hi [jik]
-2> bib:  I am bigger now
+1> bib:  yo
+2> fig:  hi [jik]
+3> saor48:  i go here
+4> bib:  I am bigger now
+5> fig:  yo
+6> bib:  hi [jik]
+7> fig:  i am you [bo]
