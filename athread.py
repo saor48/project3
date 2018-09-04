@@ -4,6 +4,10 @@ import athread
 import time
 import csv, json
 
+# return values for main from structure
+decrement_chatters = 0
+decrement_userlog = ""
+
 print('--> athread.py', time.time()) 
 
 def start_loop(loop):
@@ -12,7 +16,6 @@ def start_loop(loop):
     asyncio.set_event_loop(loop)
     #loop.run_until_complete()
     loop.run_forever()
-
 
 def json_phrases(jsondict, chatline):
     timer = time.time()
@@ -24,16 +27,19 @@ def json_phrases(jsondict, chatline):
     
 def whois_online(userlog):
     #check if no user get in last 15 secs => logged out
+    global decrement_chatters, decrement_userlog
     timer = time.time()
     for user in userlog:
         print("log-", user,userlog[user])
         if userlog[user] + 15 < timer:
             print("at-", timer)
             remove(user)
+            decrement_chatters = -1
+            decrement_userlog = user
+            
 
 def remove(user):
-    global chatters
-    chatters -= 1
+    ###############popping last user in list xxxxxxxx not user     ------error 
     print("popping-", user)
     user1 = user.split(' ')
     user = user1[1].lower() + "\n"

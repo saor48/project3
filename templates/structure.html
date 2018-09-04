@@ -18,14 +18,18 @@
                 <label for="line">Line Number</label>
                 <input type="text" name="line" id="line"/>
                 <br>
-                This line number is:<br>
-                <input type="radio" name="sq" value="stat"> A statement, not a question<br>
-                <input type="radio" name="sq" value="ques"> A question, not a statement<br>
-                <input type="radio" name="sq" value="none"> Neither a statement nor a question<br>
+                This line number is a:<br>
+                <input type="radio" name="sq" value="stat"/> Statement, but incorrect<br>
+                <input type="radio" name="sq" value="ques"/> Question, but incorrect<br>
+                
                 <br>
-                <input type="hidden" name="message" value="">
+                <input type="hidden" name="message" value=""/>
                 <input type="submit" value="Submit"/>
             </form>
+            
+        <div id="result">
+            {{result}}
         </div>
+    </div>
 </body>
 </html>

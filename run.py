@@ -1,14 +1,9 @@
 """to fix
 Heroku - not reseting users.txt -----
-chatters subtract   done but test
+2. users= same name
 """
 """to add
 0.list of verbs, nouns
-1. search phrase for verbs -done basic
-2. second form input  -output to chat, how?
-"""
-"""option
-asyncio - py3.5 modules not available in c9-py3.4
 """
 import os, asyncio, time
 from flask import Flask, redirect, render_template, request, url_for, flash
@@ -26,6 +21,7 @@ PYTHONASYNCIODEBUG = 1
 #newTHREAD = False
 maxUSERS = 3
 error_message = ""
+
 phrases = []    # chat messages
 userlog = {}      # current users online 
 jsondict = {}   # chat message as json
@@ -63,6 +59,7 @@ def add_phrase(username, corrected, line):
     new_thread(jsondict, chatline)
 
 def new_thread(jsondict, chatline):
+    global chatters, userlog
     timer = time.time()
     print('start new thread', timer)
     new_loop = asyncio.new_event_loop()
@@ -70,7 +67,13 @@ def new_thread(jsondict, chatline):
     t.start()
     new_loop.call_soon_threadsafe(athread.json_phrases, jsondict, chatline)
     print('after loop call, delay=', time.time() - timer)
+    # check if each user still online
     new_loop.call_soon_threadsafe(athread.whois_online, userlog)
+    chatters += athread.decrement_chatters
+    user0 = athread.decrement_userlog
+    print('user0-79', user0)
+    if user0 != '':
+        del userlog[user0] 
     print('2nd loop call, delay=', time.time() - timer)
     
 def previous_message(username):
@@ -135,7 +138,7 @@ def parse_phrases(words):
     
 # ---------------4-VIEWS-----------------------------------------#
 # '/'                       enter username then redirects to /username
-# '/<username>'             main user chat page
+# '/<username>'             main user chat page, handles form submits
 # '/chat/messages'          updates each user with new messages
 # '/chat/structure'         form to allow user to analyse any message line
 
@@ -176,12 +179,14 @@ def username(username):
     if request.method == "POST":
         # request for structure
         if not request.form["message"]:
-            cc = request.form["cc"]
-            line = int(request.form["line"])
-            sq = request.form["sq"]
-            message = ""
-            print("cc--", cc,line,sq)
-            structure.main(str(line))
+            if request.form["cc"]:         # 400 Bad Request: KeyError: 'cc'
+                cc = request.form["cc"]     # perhaps hit submit by eror    
+                line = int(request.form["line"])
+                sq = request.form["sq"]
+                message = ""                # needed
+                print("cc--", cc,line,sq)
+                structure.main(str(line), sq, cc)
+                print("run.py189 s-r=", structure.structure_result)
         else:
             message = request.form["message"]
         # new messsage
@@ -207,7 +212,6 @@ def messages():
         user = request.args["user"]
         timer = time.time()
         userlog[user] = timer    #timestamp user for later check if still online
-                  
     return render_template("messages.html", chat_messages=phrases,
                 score=score, leaderboard=leaderboard)
 
@@ -215,6 +219,6 @@ def messages():
 @app.route('/chat/structure', methods=["GET","POST"])  
 def struct(): 
     # "w3-include-html"
-    return render_template("structure.html")
+    return render_template("structure.html", result=structure.structure_result)
   
 app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=True)
