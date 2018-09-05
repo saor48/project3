@@ -5,8 +5,8 @@ import time
 import csv, json
 
 # return values for main from structure
-decrement_chatters = 0
 decrement_userlog = ""
+found = False
 
 print('--> athread.py', time.time()) 
 
@@ -27,19 +27,20 @@ def json_phrases(jsondict, chatline):
     
 def whois_online(userlog):
     #check if no user get in last 15 secs => logged out
-    global decrement_chatters, decrement_userlog
+    global decrement_userlog, found
+    found = False
     timer = time.time()
+    print('whois-', userlog, timer)
     for user in userlog:
         print("log-", user,userlog[user])
         if userlog[user] + 15 < timer:
             print("at-", timer)
             remove(user)
-            decrement_chatters = -1
             decrement_userlog = user
-            
-
+            found = True
+    print('whois-', found)
+       
 def remove(user):
-    ###############popping last user in list xxxxxxxx not user     ------error 
     print("popping-", user)
     user1 = user.split(' ')
     user = user1[1].lower() + "\n"

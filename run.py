@@ -1,6 +1,6 @@
 """to fix
-Heroku - not reseting users.txt -----
-2. users= same name
+1. make -online now- part of 5sec update
+2. limit lines to last 10
 """
 """to add
 0.list of verbs, nouns
@@ -69,11 +69,13 @@ def new_thread(jsondict, chatline):
     print('after loop call, delay=', time.time() - timer)
     # check if each user still online
     new_loop.call_soon_threadsafe(athread.whois_online, userlog)
-    chatters += athread.decrement_chatters
-    user0 = athread.decrement_userlog
-    print('user0-79', user0)
-    if user0 != '':
-        del userlog[user0] 
+    found = athread.found
+    if found:
+        user0 = athread.decrement_userlog
+        print('user0-79', user0)
+        if user0 != '':
+            del userlog[user0]  
+            chatters += -1
     print('2nd loop call, delay=', time.time() - timer)
     
 def previous_message(username):
