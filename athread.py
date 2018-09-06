@@ -39,7 +39,7 @@ def whois_online(userlog):
             decrement_userlog = user
             found = True
     print('whois-', found)
-       
+    
 def remove(user):
     print("popping-", user)
     user1 = user.split(' ')

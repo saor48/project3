@@ -1,2 +1,1 @@
-bibbo
-fig
+bib

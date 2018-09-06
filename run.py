@@ -35,14 +35,15 @@ sourcelist = "data/wordlist.txt"
      # adapted from https://github.com/first20hours/google-10000-english
 sourcelist2 = "data/8K-english.txt"  
 
-# ---------------6-Functions-----------------------------------------#
-#  add_phrase(username, corrected, line) -- append to list(phrases) + create json string
+# ---------------7-Functions-----------------------------------------#
+# add_phrase(username, corrected, line) --- append to list(phrases) + create json string
 # new_thread(jsondict, chatline): --------- start new thread for below:
     # athread.json_phrases(jsondict, chatline)---append new message to json file
 # previous_message(username) -------------- check if user submit button x2
 # calc_score(corrected, username)---------- score each word then total
 # calc_leaderboard(username, my_score) ---- reorder leaderboard
 # parse_phrases(words)--------------------- check each word in message
+# same(username)--------------------------- check if username already in use
 
 def add_phrase(username, corrected, line):
     global jsondict
@@ -137,7 +138,17 @@ def parse_phrases(words):
     print("corrected-", corrected)
     score = good - bad
     return (corrected, score, question)
-    
+
+def same(username):
+    with open("data/users.txt", "r") as user_list:
+        users = user_list.readlines()
+        username += "\n"
+        print ('same-',users, username)
+        if username in users:
+            return True
+        else:
+            return False
+            
 # ---------------4-VIEWS-----------------------------------------#
 # '/'                       enter username then redirects to /username
 # '/<username>'             main user chat page, handles form submits
@@ -147,7 +158,7 @@ def parse_phrases(words):
 # user sign in page
 @app.route('/', methods=["GET","POST"])
 def index():
-    global chatters, error_message
+    global chatters, error_message, userlog
     if request.method == "POST":
         chatters += 1
         if chatters == 1:
@@ -158,13 +169,17 @@ def index():
             with open("data/chatlines.txt", "w") as list:
                  list.close()
         if chatters <= maxUSERS: 
-            timer = str(time.time())
+            if same(request.form["username"]):
+                chatters -= 1
+                error_message = "--> This username already taken - try another."
+                flash("Sorry, but there was a problem:")
+                return render_template("index.html", error=error_message)
             with open("data/users.txt", "a") as user_list:
                 user_list.writelines(request.form["username"] + "\n")
             return redirect(request.form["username"]) 
         else:
-            error_message = "Max Users exceeded - No Access"
-            flash("Max Users exceeded - Access Denied")
+            error_message = "--> Max Users exceeded - Access Denied"
+            flash("Sorry, but there was a problem:")
             chatters -= 1
     return render_template("index.html", error=error_message)
 
