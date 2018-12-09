@@ -10,13 +10,14 @@
     </head>
 <body>
     <div class="container" >
-        <div id="chat" class="column">
+        <div id="chat" class="col-left">
             <h1 id="hello">Hello {{username}} </h1>
-            <div id="score"> Score:{{my_score}}</div>
-            <form method="POST">
+            <div id="score">Total Score:{{my_score}}</div>
+            <form method="POST" name="message">
                 <label for="line">Your message</label>
-                <input type="text" name="message" id="message"/>
+                <input type="text" name="message" id="message" required/>
                 <br>
+                <input type="hidden" name="form" value="message"/>
                 <input type="submit" value="Submit"/>
             </form>
             <h3>Online now ({{chatters}}): 
@@ -38,7 +39,7 @@
             <div id = "timer">Timer</div>
         </div> 
         <div id="analyse" class="column">
-            <h2>Here you can analyse the structure of your phrases</h2>
+            <h2 id="header">Here you can analyse the structure of your phrases</h2>
             <h4>Enter the line number you want to analyse and the type of phrase as statement or question</h4>
             <h3>Cooperate or challenge</h3>
             <form method="POST" name="structure" id="structure">
@@ -56,15 +57,16 @@
     <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
     <script>
-        var user = jQuery("#hello").text()
         jQuery.get( "/chat/structure").then(function(text, status, xhr){
                 jQuery("#analyse").html(text);
             });
+            
+        var user = jQuery("#hello").text()
         var newMessageCheck = setInterval(function() { 
             var timer = Date.now();
             $( "#timer" ).html("timenow=" + timer/1000 );
             console.log(timer/1000);
-            
+            // 1.get new messages + 2.send usernameto be timestamped
             jQuery.get( "/chat/messages?user=" + user).then(function(text, status, xhr){
                 jQuery("#reloader").html(text);
             });

@@ -1,26 +1,39 @@
 * {
     box-sizing: border-box;
     }
+body {
+    background-color:powderblue;   
+}
 .container {
     background-color:powderblue; 
     height:500px
 }
-.column {
+.col-left {
     float: left;
-    width: 50%;
+    width: 60%;
     padding: 10px;
+    }
+.col-right {
+    float: right;
+    width: 40%;
+    padding: 10px;
+    height: 500px;
     }
 #analyse {
      background-color:yellow;
 }
 #reloader {
     position: relative;
+    background-color: lightblue;
+    height: 300px;
+    width: 100%;
+    overflow-y: scroll;
 }
 #score{
     background-color: white;
     float: right;
     width: 20%;
-    padding-right: 20px;
+    margin-right: 50px;
     }
 #scoreb{
     position: absolute;
@@ -29,5 +42,10 @@
     top: 20px;
     width: 25%;
     }
-            
+@media(max-width:576px) {
+    #hello, #header {display:none;}
+    #reloader {height: 150px}
+    .col-left {width: 100%;}
+    .col-right {width: 100%;}
+}           
        

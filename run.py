@@ -1,9 +1,9 @@
 """to fix
-1. make -online now- part of 5sec update
-2. limit lines to last 10
+1. clean up form handling
 """
 """to add
 0.list of verbs, nouns
+1. list of test phrases
 """
 import os, asyncio, time
 from flask import Flask, redirect, render_template, request, url_for, flash
@@ -23,17 +23,16 @@ maxUSERS = 3
 error_message = ""
 
 phrases = []    # chat messages
-userlog = {}      # current users online 
+userlog = {}    # current users online 
 jsondict = {}   # chat message as json
 chatters = 0    #current number of users online
-line = 0       #enumerate each chat line
+line = 0        #enumerate each chat line
 previous = {}   #store previous message for each user
 score = {}      #hold current score for all users
 leaderboard = [] #sorted list by top scorer
 user_score = 0  # for this username
-sourcelist = "data/wordlist.txt"
      # adapted from https://github.com/first20hours/google-10000-english
-sourcelist2 = "data/8K-english.txt"  
+sourcelist = "data/8K-english.txt"  
 
 # ---------------7-Functions-----------------------------------------#
 # add_phrase(username, corrected, line) --- append to list(phrases) + create json string
@@ -104,8 +103,8 @@ def calc_leaderboard(username, my_score):
         leaderboard.append(str(username))
     pos = leaderboard.index(str(username))
     for k, v in score.items():
-        if my_score > score[str(k)]:
-            kpos = leaderboard.index(str(k))
+        if my_score > score[k]:
+            kpos = leaderboard.index(k)
             if pos > kpos:
                 leaderboard.remove(str(username))
                 leaderboard.insert(kpos,str(username))
@@ -119,7 +118,7 @@ def parse_phrases(words):
     with open(sourcelist, "r") as word_list:
         reader = csv.reader(word_list, delimiter=',')
         """
-    with open(sourcelist2, "r") as word_list:  
+    with open(sourcelist, "r") as word_list:  
         filelist = word_list.read().splitlines()   
         for word in words:
             if word == words[-1]:
@@ -195,8 +194,7 @@ def username(username):
         
     if request.method == "POST":
         # request for structure
-        if not request.form["message"]:
-            if request.form["cc"]:         # 400 Bad Request: KeyError: 'cc'
+        if request.form["form"] == "structure":         # 400 Bad Request: KeyError: 'cc'
                 cc = request.form["cc"]     # perhaps hit submit by eror    
                 line = int(request.form["line"])
                 sq = request.form["sq"]
@@ -205,7 +203,9 @@ def username(username):
                 structure.main(str(line), sq, cc)
                 print("run.py189 s-r=", structure.structure_result)
         else:
-            message = request.form["message"]
+            if request.form["form"] == "message":
+                message = request.form["message"]
+                message = message.strip()
         # new messsage
         if str(message) != "":
             if str(message) != previous_message(username):     #dont reload POST data
@@ -224,11 +224,16 @@ def username(username):
 # update chat messages very 5 secs
 @app.route('/chat/messages', methods=["GET","POST"])  
 def messages(): 
-    global userlog
+    global userlog, phrases
     if request.method == "GET":
         user = request.args["user"]
         timer = time.time()
         userlog[user] = timer    #timestamp user for later check if still online
+    if len(phrases) > 5: # show only 10 messages
+        phrase10 = []
+        for i in range(5):
+            phrase10.append(phrases[i-5])
+        phrases = phrase10
     return render_template("messages.html", chat_messages=phrases,
                 score=score, leaderboard=leaderboard)
 
@@ -236,6 +241,18 @@ def messages():
 @app.route('/chat/structure', methods=["GET","POST"])  
 def struct(): 
     # "w3-include-html"
-    return render_template("structure.html", result=structure.structure_result)
-  
-app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=True)
+    result=structure.structure_result
+    return render_template("structure.html", result=result)
+    
+@app.route('/chat/test', methods=["GET","POST"])  
+def test(): 
+    if request.method == "POST":
+        for i in range(0,3):
+            structure.main(i,"stat","test")
+            result=structure.structure_result
+    else:
+        result = "start test"
+    return render_template("test.html", result=result)
+
+if __name__ == '__main__': 
+    app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=True)

@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Analyse</title>
+    <title>Test</title>
 </head>
 <body>
     <div id="analyse" class="col-right">
-            <h2 id="header">Here you can analyse </br>the structure of phrases</h2>
+            <h2 id="header">Testing </br>the structure of phrases</h2>
             <h4>Enter the line number you want to analyse </br>
                 then select the type of the phrase</h4>
             
             <form method="POST" action="" name="structure">
-                <input type="radio" name="cc" value="chal" required> Challenge<br>
+                <input type="radio" name="cc" value="test" required> Test<br>
                 <label for="line">Line Number</label>
                 <input type="text" name="line" id="line" maxlength="3" size="3"/>
                 <br>
@@ -27,7 +27,7 @@
             </form>
             
         <div id="result">
-            <h5>Challenge result:</h5>
+            <h5>Test result:</h5>
             {{result}}
         </div>
     </div>
