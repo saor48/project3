@@ -9,26 +9,23 @@
 <body>
     <div id="analyse" class="col-right">
             <h2 id="header">Testing </br>the structure of phrases</h2>
-            <h4>Enter the line number you want to analyse </br>
-                then select the type of the phrase</h4>
+            <h4>Enter the phrase type you want to analyse </h4>
             
             <form method="POST" action="" name="structure">
-                <input type="radio" name="cc" value="test" required> Test<br>
-                <label for="line">Line Number</label>
-                <input type="text" name="line" id="line" maxlength="3" size="3"/>
-                <br>
-                This line number is a:<br>
-                <input type="radio" name="sq" value="stat" required/> Statement, but incorrect<br>
-                <input type="radio" name="sq" value="ques"/> Question, but incorrect<br>
-                
+                <input type="radio" name="cc" value="test-s" required > Test good statements<br>
+                <input type="radio" name="cc" value="test-se" /> Test error statements <br>
+                <input type="radio" name="cc" value="test-q" /> Test good questions<br>
+                <input type="radio" name="cc" value="test-qe" /> Test error questions<br>
                 <br>
                 <input type="hidden" name="form" value="structure"/>
                 <input type="submit" value="Submit"/>
             </form>
             
         <div id="result">
-            <h5>Test result:</h5>
-            {{result}}
+            <h5>Test results:</h5>
+            {% for result in results %}
+            {{result}}<br>
+            {% endfor %}
         </div>
     </div>
 </body>

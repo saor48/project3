@@ -245,14 +245,21 @@ def struct():
     return render_template("structure.html", result=result)
     
 @app.route('/chat/test', methods=["GET","POST"])  
-def test(): 
+def test():
+    results = []
     if request.method == "POST":
-        for i in range(0,3):
-            structure.main(i,"stat","test")
+        test = request.form['cc']
+        if test == "test-s" or test == "test-se":
+            sq = "stat"
+        else:
+            sq = "ques"
+        for line in range(1,4):
+            structure.main(line,sq,test)
             result=structure.structure_result
+            results.append(result)
     else:
         result = "start test"
-    return render_template("test.html", result=result)
+    return render_template("test.html", results=results)
 
 if __name__ == '__main__': 
     app.run(host=os.getenv('IP'), port=int(os.getenv('PORT')), debug=True)

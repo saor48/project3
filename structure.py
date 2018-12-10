@@ -40,10 +40,25 @@ verbs = ""
 # def format_result(result)....text value for display
 # def main(line, sq, cc) ......analyse user inputs then call fns as needed
 # ============--------------------------------==================
-def gettestline(line):
-     with open("data/statements.txt", "r") as lines:
+def gettestline(line, test):
+     phrase = " "
+     line = line-1
+     if test == "test-s":
+          with open("data/tests/statements.txt", "r") as lines:
             phrases = lines.readlines()
-            phrase = phrases[line]
+            phrase += phrases[line].rstrip()
+     if test == "test-se":
+          with open("data/tests/serror.txt", "r") as lines:
+            phrases = lines.readlines()
+            phrase += phrases[line].rstrip()
+     if test == "test-q":
+          with open("data/tests/questions.txt", "r") as lines:
+            phrases = lines.readlines()
+            phrase += phrases[line].rstrip()
+     if test == "test-qe":
+          with open("data/tests/qerror.txt", "r") as lines:
+            phrases = lines.readlines()
+            phrase += phrases[line].rstrip()
      return phrase
 
 def getline(line):
@@ -87,16 +102,19 @@ def parse(words):
                     # if not preceded by article or quantifier 
                     if position > 1:
                          x = words[position-1]
+                         #this line not very good!!!
                          if x not in article and x not in quantifier:
                               if len(verb_position) > 0:
                                    # allow object to be verb participle
                                    # not eg -is closed- but -have you closed-
+                                   # also eg -can i help
                                    v1 = words[verb_position[0]]
                                    pv1 = verb_position[0]
                                    print('v1pv1-',v1,pv1)
-                                   if v1 in aux3 and pv1 != position-1:
-                                        print('inif-pos', position)
-                                        verb_position.append(position)
+                                   if v1 in aux3 or v1 in modals:
+                                        if pv1 != position-1:
+                                             print('inif-pos', position)
+                                             verb_position.append(position)
                               else:
                                    verb_position.append(position)
                     else:
@@ -184,9 +202,9 @@ def asvo(vpos, words):
           else:
                return 'no auxiliary verb in position 2 - wh'               
      # standard questions = aux and main verb
-     if words[1] in auxs:                              #aux
+     if words[1] in auxs or words[1] in modals:             #aux/modals
           if words[2] not in verbs:          
-               return 'maybe aux+verb'
+               return 'maybe asv'
           else:
                return 'subject should follow auxiliary'
                
@@ -213,7 +231,7 @@ def format_result(result):
           structure_result = 'Position 2 should be an auxiliary verb'
      if result == 'subject should follow auxiliary':
           structure_result = 'The subject should follow the auxiliary verb'
-     if result == 'maybe aux+verb':
+     if result == 'maybe asv':
           structure_result = 'Perhaps correct - no error found for format'
      # in asvo - wh-questions
      if result == 'subject should follow auxiliary -wh':
@@ -261,8 +279,8 @@ def main(line, sq, cc):
      global structure_result, agree
      if cc == "chal":
           phrase = getline(line).lower()
-     if cc == "test":
-          phrase = gettestline(line).lower()
+     if "test" in cc:
+          phrase = gettestline(line, cc).lower()
      print("main-phrase-", phrase)
      words = split(phrase)
      words = punctuation(words)
