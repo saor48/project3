@@ -71,7 +71,11 @@ def getline(line):
           print ("kv-", k, v)
      """     
      print("gline-", line)
-     phrase = eval(jphrase[line])["message"]
+     print("gline2", jphrase)
+     if line in jphrase:
+          phrase = eval(jphrase[line])["message"]
+     else:
+          phrase = "Invalid line number:" + str(line)
      print("phrase54-",phrase)
      return phrase
 
