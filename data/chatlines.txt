@@ -1,3 +1,2 @@
 1> bib:  I am bigger now
 2> bib:  hi [jik]
-3> bib:  yo

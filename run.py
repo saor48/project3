@@ -153,6 +153,7 @@ def same(username):
 # '/<username>'             main user chat page, handles form submits
 # '/chat/messages'          updates each user with new messages
 # '/chat/structure'         form to allow user to analyse any message line
+# '/chat/test'              automated testing for structure analysis section
 
 # user sign in page
 @app.route('/', methods=["GET","POST"])
