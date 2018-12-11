@@ -196,11 +196,11 @@ def username(username):
         # request for structure
         if request.form["form"] == "structure":         # 400 Bad Request: KeyError: 'cc'
                 cc = request.form["cc"]     # perhaps hit submit by eror    
-                line = int(request.form["line"])
+                sline = int(request.form["line"])
                 sq = request.form["sq"]
                 message = ""                # needed
-                print("cc--", cc,line,sq)
-                structure.main(str(line), sq, cc)
+                print("cc--", cc,sline,sq)
+                structure.main(str(sline), sq, cc)
                 print("run.py189 s-r=", structure.structure_result)
         else:
             if request.form["form"] == "message":
@@ -253,8 +253,8 @@ def test():
             sq = "stat"
         else:
             sq = "ques"
-        for line in range(1,4):
-            structure.main(line,sq,test)
+        for sline in range(1,4):        #using only lines 1-3, change this later
+            structure.main(sline,sq,test)
             result=structure.structure_result
             results.append(result)
     else:

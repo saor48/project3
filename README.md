@@ -1,5 +1,5 @@
 # English Chat Page
-A chat application to teach basic English writing for non-native speakers.
+A chat application to teach basic English spelling and structure for non-native speakers.
 Expected input is a single phrase.
 App is multi-player and with a limit set on number of users
 Ideal for classroom use or student practice
@@ -30,7 +30,7 @@ A specific error message is shown for any errors found.
 4. A user selected line can additionally be checked for correct structure.
         This function is limited in scope to a basic check of correct verb positioning.
         Beyond this would be overly complex for this project.
-        ? The challenge can be set in scoring or non-scoring mode
+        ?- The challenge can be set in scoring or non-scoring mode
 5. User Limit: set to 3 for testing purposes
 6. New messages and leaderboard are updated every 5 secs to other users
 7. Rest of user's page is only updated when user submits a valid form.
@@ -53,7 +53,8 @@ A specific error message is shown for any errors found.
 - The main messaging section (blue box) is tested manually.
 - The structure analysis ( yellow box) uses atomated testing at /chat/test
 - Structural tests are limited to the single phrases that the app can currently handle.
-
+- Note that correctness is limited to the data contained in the wordlist and verblist files
+- The word list contains abot 8000 words, the verb list has about 1200 verbs.
 ### Main Section Tests:
 - Submit a message with correct spelling results in phrase appearing in main box 
        without any brackets and scored correctly.
@@ -65,6 +66,7 @@ A specific error message is shown for any errors found.
 ### Structure Section Tests:
 - Submitting blanks prevented by required attribute
 - Submitting non-existant line (x) produces result "x>Challenges must have at least three words"
+- Submitting a line with a word in [] produces result "Challenges cannot have [] words"
 - Automated test page at /chat/test. All tests produce expected results.
 - Automated test data files stored at /data/tests
 
@@ -75,7 +77,10 @@ A specific error message is shown for any errors found.
 
 ### Issues:
 1. Bugs:
-    1. 
+    1. Heroku appears not to notice that user has closed app.
+        - User should be removed after 15 secs and 2 posts from other users.
+        - This functionality works on c9.
+        - Cause probably due to caching of /data/users.txt
     
     
 
@@ -83,4 +88,6 @@ A specific error message is shown for any errors found.
 
 1. App deployed on Heroku :https://project3-chat.herokuapp.com/
 2. Files created for this deployment: Procfile, requirements.txt.
-3. GitHub:https://github.com/saor48/project3
+3. Cloud9: https://ide.c9.io/saor48/project3
+4. GitHub: https://github.com/saor48/project3
+5. 

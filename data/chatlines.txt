@@ -1,1 +1,3 @@
-3> bib:  how much money have you got?
+1> bib:  I am bigger now
+2> bib:  hi [jik]
+3> bib:  yo
