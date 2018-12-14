@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Test</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Test</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 </head>
 <body>
-    <div id="analyse" class="col-right">
-            <h2 id="header">Testing <br>the structure of phrases</h2>
-            <h4>Enter the phrase type you want to analyse </h4>
-            
+   <main class="row row-flex">
+      <hr>
+      <section class="col-xs-10 col-xs-offset-1 col-md-4 col-md-offset-1 display panel panel-default">
+         <article class="panel-body">
+            <header> 
+               <h2 id="header">Testing <br>the structure of phrases</h2>
+               <h4>Select the phrase type you want to analyse </h4>
+            </header>
             <form method="POST" action="" name="structure">
                 <input type="radio" name="cc" value="test-s" required > Test good statements<br>
                 <input type="radio" name="cc" value="test-se" /> Test error statements <br>
@@ -21,12 +27,37 @@
                 <input type="submit" value="Submit"/>
             </form>
             
-        <div id="result">
-            <h5>Test results:</h5>
-            {% for result in results %}
-            {{result}}<br>
-            {% endfor %}
-        </div>
-    </div>
+            <div id="result">
+                <h5>Test results:</h5>
+                {% for result in results %}
+                {{result}}<br>
+                {% endfor %}
+            </div>
+         </article>
+      </section>
+      <section class="col-xs-10 col-xs-offset-1 col-md-4 col-md-offset-1 display panel panel-default">
+         <article class="panel-body">
+            Statements<br>       
+            I have no time <br>
+            The shop is now closed<br>
+            The book is on the table<br>
+            <br>
+            Error Statements<br>
+            have to go now<br>                  
+            we really like<br>                  
+            the book good<br>
+            <br>
+            Questions<br>
+            Can I help you?<br>       
+            Are you hot?<br>                    
+            Where is the book?<br>
+            <br>
+            Error Questions:<br> 
+            Why you are sad?<br>                
+            you are sad?<br>                    
+            are sad you?<br>
+         </article>
+      </section>
+   </main>
 </body>
 </html>

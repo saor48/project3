@@ -4,8 +4,8 @@
     <title>Structure</title>
 </head>
 <body>
-    <div id="analyse" class="col-right">
-            <h2 id="header">Here you can analyse <br>the structure of phrases</h2>
+    <div id="analyse" class="col-xs-12 col-sm-4">
+            <h3 id="header">Here you can analyse <br>the structure of phrases</h3>
             <h4>Enter the line number you want to analyse <br>
                 then select the type of the phrase</h4>
             
@@ -14,7 +14,8 @@
                 <label for="line">Line Number</label>
                 <input type="text" name="line" id="line" maxlength="3" size="3" required/>
                 <br>
-                This line number is a:<br>
+                <br>
+                I say, this line is a:<br>
                 <input type="radio" name="sq" value="stat" required/> Statement, but incorrect<br>
                 <input type="radio" name="sq" value="ques"/> Question, but incorrect<br>
                 
@@ -24,6 +25,7 @@
             </form>
             
         <div id="result">
+            <br>
             <h5>Challenge result:</h5>
             {{result}}
         </div>

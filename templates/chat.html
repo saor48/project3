@@ -1,5 +1,5 @@
 <!-- Main user page
-        uses jquery to get new messages from message.html
+        uses jquery to get new messages from messages.html
         and provide a form from structure.html to analyse any message
 -->
 <!DOCTYPE html>
@@ -7,12 +7,19 @@
     <head>
         <link rel="stylesheet" href="static/css/style.css" type="text/css" />
         <title>My English Chat Page</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     </head>
 <body>
-    <div class="container" >
-        <div id="chat" class="col-left">
-            <h1 id="hello">Hello {{username}} </h1>
-            <div id="score">Total Score:{{my_score}}</div>
+   <div class="container col-xs-12">
+      <main>
+         <section id="chat" class="col-xs-12 col-sm-8">
+            <header>        
+               <h1 id="hello">Hello {{username}} </h1>
+            </header>
+            <aside id="score">
+               Total Score:{{my_score}}
+            </aside>
             <form method="POST" name="message">
                 <label for="line">Your message</label>
                 <input type="text" name="message" id="line" required/>
@@ -20,33 +27,35 @@
                 <input type="hidden" name="form" value="message"/>
                 <input type="submit" value="Submit"/>
             </form>
-            <h3>Online now ({{chatters}}): 
+            <h4>Online now ({{chatters}}): 
                 {%for user in users%}
                 {{user}},
                 {%endfor%}
-            </h3>
+            </h4>
             <div id="reloader">
-                {%for chatline in chat_messages%}
-                {{chatline}}<br>
-                {%endfor%}
+               {%for chatline in chat_messages%}
+               {{chatline}}<br>
+               {%endfor%}
             
-                <div id="scoreb"> Leaderboard:
-                    <br>{%for k in leaderboard%}
-                        {{k}}: {{score[k]}}<br>
-                        {%endfor%}
-                </div>
+               <aside id="scoreb"> Leaderboard:
+                  <br>{%for k in leaderboard%}
+                     {{k}}: {{score[k]}}<br>
+                     {%endfor%}
+               </aside>
             </div>
-            
-        </div> 
-        <div id="analyse" class="column">
-    </div>
-</div>
-    
+         </section> 
+         
+         <section id="analysediv">
+         </section>
+         
+      </main>
+   </div> 
+   
 <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
 <script>
     jQuery.get( "/chat/structure").then(function(text, status, xhr) {
-                jQuery("#analyse").html(text);
+                jQuery("#analysediv").html(text);
     });
             
     var user = jQuery("#hello").text()

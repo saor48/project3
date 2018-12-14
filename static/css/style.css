@@ -8,19 +8,10 @@ body {
     background-color:powderblue; 
     height:500px
 }
-.col-left {
-    float: left;
-    width: 60%;
-    padding: 10px;
-    }
-.col-right {
-    float: right;
-    width: 40%;
-    padding: 10px;
-    height: 500px;
-    }
+
 #analyse {
-     background-color:yellow;
+    background-color:yellow;
+    height: 500px;
 }
 #reloader {
     position: relative;
@@ -42,10 +33,5 @@ body {
     top: 20px;
     width: 25%;
     }
-@media(max-width:576px) {
-    #hello, #header {display:none;}
-    #reloader {height: 150px}
-    .col-left {width: 100%;}
-    .col-right {width: 100%;}
-}           
+
        
