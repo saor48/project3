@@ -6,10 +6,11 @@ body {
 }
 .container {
     background-color:powderblue; 
-    height:500px
+    height:1000px
 }
 
 #analyse {
+    position: relative;
     background-color:yellow;
     height: 500px;
 }

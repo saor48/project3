@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Structure</title>
-</head>
-<body>
-    <div id="analyse" class="col-xs-12 col-sm-4">
-            <h3 id="header">Here you can analyse <br>the structure of phrases</h3>
-            <h4>Enter the line number you want to analyse <br>
+
+    <div id="analyse" class="col-xs-12">
+        <h3 id="header">Here you can analyse <br>the structure of phrases</h3>
+        <h4>Enter the line number you want to analyse <br>
                 then select the type of the phrase</h4>
             
-            <form method="POST" name="structure">
+        <form method="POST" name="structure">
                 <input type="radio" name="cc" value="chal" required> Challenge<br>
                 <label for="line">Line Number</label>
                 <input type="text" name="line" id="line" maxlength="3" size="3" required/>
@@ -22,7 +19,7 @@
                 <br>
                 <input type="hidden" name="form" value="structure"/>
                 <input type="submit" value="Submit"/>
-            </form>
+        </form>
             
         <div id="result">
             <br>
@@ -30,5 +27,5 @@
             {{result}}
         </div>
     </div>
-</body>
+
 </html>
