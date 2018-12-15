@@ -93,7 +93,7 @@ A specific error message is shown for any structural errors found.
 
 ## Deployment:
 
-1. App deployed on Heroku: https://project5-tracker.herokuapp.com/
+1. App deployed on Heroku: https://project3-chat.herokuapp.com/
     1. Add config vars: in Heroku-Settings-Reveal Config Vars
         - add IP with value 0.0.0.0
         - add PORT with value 5000
