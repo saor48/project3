@@ -1,3 +1,5 @@
 1> bib:  I am bigger now
 2> fig:  hi [jik]
 3> bib:  yo
+4> fig:  I am bigger now
+5> fig:  i am you [bo]

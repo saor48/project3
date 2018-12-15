@@ -43,6 +43,7 @@ A specific error message is shown for any structural errors found.
 ### Features Left to Implement
 1. The challenge can be set in scoring or non-scoring mode
 2. Pseudo code at static/pseudo.code shows future development for verb analysis
+3. Change from using text file to hold current users due to heroku caching issues
 
 ## Technology:
 - [Flask] (http://flask.pocoo.org/)
@@ -80,7 +81,7 @@ A specific error message is shown for any structural errors found.
 
 ### Devices
 - Tested on google inspect for different screen sizes. 
-- Tested on browsers Chrome, Edge, Opera.
+- Tested on browsers Chrome, Edge, Opera and Firefox on mobile
 
 ### Issues:
 1. Bugs:

@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 TEMPLATES_AUTO_RELOAD = False
 
-maxUSERS = 3    # for testing purposes
+maxUSERS = 6    # set to 6 for testing purposes and problems with heroku caching
 error_message = ""
 
 phrases = []    # chat messages
@@ -55,6 +55,8 @@ def new_thread(jsondict, chatline):
     t.start()
     new_loop.call_soon_threadsafe(athread.json_phrases, jsondict, chatline)
     # check if each user still online, delete from userlog if not.
+    # use of text file for this not working well on heroku probably due to caching
+    # could change this to use a list instead
     new_loop.call_soon_threadsafe(athread.whois_online, userlog)
     found = athread.found
     if found:
